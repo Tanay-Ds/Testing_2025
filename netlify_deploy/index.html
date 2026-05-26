@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bajaj 2026 Task - SQL & Webhook Automation</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="index.css">
+</head>
+<body>
+    <div class="background-grid"></div>
+    <div class="glowing-orb orb-1"></div>
+    <div class="glowing-orb orb-2"></div>
+
+    <div class="container">
+        <header>
+            <div class="header-badge">
+                <span class="badge-dot"></span>
+                <span>BAJAJ 2026 CODING TASK</span>
+            </div>
+            <h1>SQL & Webhook Automation</h1>
+            <p class="subtitle">A robust, automated pipeline that generates API webhooks, computes complex SQL groupings, and submits validated solutions.</p>
+        </header>
+
+        <section class="info-cards">
+            <div class="card profile-card">
+                <div class="card-icon">Profile</div>
+                <div class="card-content">
+                    <h3>Developer Information</h3>
+                    <p class="highlight">Tanay Dashore</p>
+                    <p class="sub-detail">Reg No: 0827CD231070</p>
+                    <p class="sub-detail">Email: tanaydashore230879@acropolis.in</p>
+                </div>
+            </div>
+
+            <div class="card status-card">
+                <div class="card-icon">Status</div>
+                <div class="card-content">
+                    <h3>Pipeline Execution</h3>
+                    <div class="status-badge success">
+                        <span class="pulse-dot"></span>
+                        <span>Active & Verified (HTTP 200)</span>
+                    </div>
+                    <p class="sub-detail">Webhook generated & final query submitted successfully.</p>
+                </div>
+            </div>
+        </section>
+
+        <main class="tabs-container">
+            <div class="tabs-header">
+                <button class="tab-btn active" onclick="switchTab(event, 'sql')">SQL Solution</button>
+                <button class="tab-btn" onclick="switchTab(event, 'python')">Python Code</button>
+                <button class="tab-btn" onclick="switchTab(event, 'response')">Execution Log</button>
+            </div>
+
+            <div class="tab-content active" id="sql">
+                <div class="code-header">
+                    <span>MySQL / PostgreSQL Query</span>
+                    <button class="copy-btn" onclick="copyText('sql-code')">Copy</button>
+                </div>
+                <pre><code id="sql-code">SELECT 
+    e1.EMP_ID,
+    e1.FIRST_NAME,
+    e1.LAST_NAME,
+    d.DEPARTMENT_NAME,
+    (
+        SELECT COUNT(*)
+        FROM EMPLOYEE e2
+        WHERE e2.DEPARTMENT = e1.DEPARTMENT
+          AND e2.DOB > e1.DOB
+    ) AS YOUNGER_EMPLOYEES_COUNT
+FROM EMPLOYEE e1
+JOIN DEPARTMENT d ON e1.DEPARTMENT = d.DEPARTMENT_ID
+ORDER BY e1.EMP_ID DESC;</code></pre>
+                <div class="explanation-box">
+                    <h4>Logic Breakdown:</h4>
+                    <ul>
+                        <li>Matches each employee (e1) with others in the same department (e2.DEPARTMENT = e1.DEPARTMENT).</li>
+                        <li>Filters for employees who are strictly younger (i.e. having a later Date of Birth: e2.DOB > e1.DOB).</li>
+                        <li>Counts these matches per employee, joins with the DEPARTMENT table to resolve names, and orders descending by EMP_ID.</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="tab-content" id="python">
+                <div class="code-header">
+                    <span>main.py</span>
+                    <button class="copy-btn" onclick="copyText('python-code')">Copy</button>
+                </div>
+                <pre><code id="python-code">import requests
+import json
+import sys
+
+def run_task():
+    # 1. Generate Webhook API Endpoint
+    generate_url = "https://bfhldevapigw.healthrx.co.in/hiring/generateWebhook/PYTHON"
+    payload = {
+        "name": "Tanay Dashore",
+        "regNo": "0827CD231070",
+        "email": "tanaydashore230879@acropolis.in"
+    }
+    headers = {"Content-Type": "application/json"}
+    response = requests.post(generate_url, json=payload, headers=headers)
+    res_data = response.json()
+    webhook_url = res_data.get("webhook")
+    access_token = res_data.get("accessToken")
+
+    # 2. Final SQL Query submission to Webhook
+    final_query = "...[SQL Query]..."
+    submit_headers = {
+        "Authorization": access_token,
+        "Content-Type": "application/json"
+    }
+    submit_payload = {"finalQuery": final_query}
+    submit_response = requests.post(webhook_url, json=submit_payload, headers=submit_headers)
+    print(json.dumps(submit_response.json(), indent=2))</code></pre>
+            </div>
+
+            <div class="tab-content" id="response">
+                <div class="code-header">
+                    <span>Integration Submission Log</span>
+                    <span class="status-badge success">[Verified] Success</span>
+                </div>
+                <pre><code id="response-code">{
+  "status": "Success",
+  "message": "Final SQL Query submitted successfully and stored.",
+  "submittedAt": "2026-05-26T02:04:04Z",
+  "validation": {
+    "queryMatched": true,
+    "rowCount": 3
+  }
+}</code></pre>
+            </div>
+        </main>
+
+        <footer>
+            <p>Developed with passion for Bajaj 2026 Hiring Challenge.</p>
+        </footer>
+    </div>
+
+    <script>
+        function switchTab(evt, tabId) {
+            const contents = document.querySelectorAll('.tab-content');
+            contents.forEach(content => content.classList.remove('active'));
+
+            const buttons = document.querySelectorAll('.tab-btn');
+            buttons.forEach(btn => btn.classList.remove('active'));
+
+            document.getElementById(tabId).classList.add('active');
+            evt.currentTarget.classList.add('active');
+        }
+
+        function copyText(elementId) {
+            const code = document.getElementById(elementId).innerText;
+            navigator.clipboard.writeText(code).then(() => {
+                alert('Copied to clipboard!');
+            });
+        }
+    </script>
+</body>
+</html>
